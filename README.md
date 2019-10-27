@@ -1,27 +1,34 @@
-# ShortenUrl
+# Clone this project - ShortenUrl
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
+$your-home-dir>git clone https://github.com/wingkee98/apple-url.git
 
-## Development server
+## Install Node JS
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+If you don't have a node js install on your system, use this link to download one: https://nodejs.org/en/
 
-## Code scaffolding
+After it downloaded, you have to install in on your system.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Check to see if the stallation is successfully. Open a console app and go to your-home-dir/shorten-url
 
-## Build
+type in:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+$your-home-dir/shorten-url>node -v
 
-## Running unit tests
+it should show the node version you just installd.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Install Angular CLI
 
-## Running end-to-end tests
+$your-home-dir/shorten-url>npm install -g @angular/cli
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+## Install Shorten-url
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+$your-home-dir/shorten-url>npm install
+
+## Build Front-End Codes 
+
+$your-home-dir/shorten-url/ng build
+
+## Start the Express server
+
+$your-home-dir/shorten-url/node server.js
