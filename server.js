@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 
 var api = require('./server/routes/api');
+var redirect = require('./server/routes/redirect');
 
 var port = process.env.PORT || '9000';
 var app = express();
@@ -16,7 +17,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 // router path
-app.use('/', api);
+app.use('/api', api);
+app.use('/', redirect);
 app.use('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/shorten-url/index.html'));
 });

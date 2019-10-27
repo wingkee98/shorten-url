@@ -4,11 +4,11 @@ var fs = require('fs');
 
 var dataFile = require('../../dataFile.json');
 
-router.get('/api', (req, res, next) => {
+router.get('/', (req, res, next) => {
     res.send(dataFile);
 });
 
-router.post('/api', (req, res, next) => {
+router.post('/', (req, res, next) => {
     let result = { isInputLongUrl: true };
 
     console.log('input url ' + JSON.stringify(req.body));
