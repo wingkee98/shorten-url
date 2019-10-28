@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -17,12 +18,14 @@ interface IResInfo {
   styleUrls: ['./url.component.scss']
 })
 export class UrlComponent implements OnInit {
-  private form: IFormFields;
-  private resInfo: IResInfo;
+  urlFormGroup: FormGroup;
+  formFields: IFormFields;
+  resInfo: IResInfo;
 
   constructor(private http: HttpClient) {
-    this.form = { url: '' };
+    this.formFields = { url: '' };
     this.resInfo = { shortUrl: '', longUrl: '' };
+    this.createFormGroup();
   }
 
   ngOnInit() {}
@@ -32,14 +35,14 @@ export class UrlComponent implements OnInit {
   }
 
   go(): void {
-    console.log('clicking on go ' + this.form.url);
+    console.log('clicking on go ' + this.formFields.url);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
       })
     };
 
-    this.http.post('/api', JSON.stringify({ url: this.form.url }), httpOptions).
+    this.http.post('/api', JSON.stringify({ url: this.formFields.url }), httpOptions).
     subscribe((responses:any) => {
       console.log(responses);
 
@@ -51,6 +54,12 @@ export class UrlComponent implements OnInit {
 
         this.redirect();
       }
+    });
+  }
+
+  private createFormGroup(): void {
+    this.urlFormGroup = new FormGroup({
+      'url': new FormControl(this.formFields.url, [Validators.required])
     });
   }
 

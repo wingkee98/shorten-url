@@ -1,18 +1,23 @@
 <div class="url-container">
-    <div>
-        <label>URL</label>
-        <input #urlInput [(ngModel)]="form.url" (keyup)="onKeyPress($event)" type="text" placeholder="Enter URL here..."/>
-    </div>
+    <form [formGroup]="urlFormGroup" novalidate>
+        <div>
+            <label>URL</label>
+            <input #urlInput [(ngModel)]="formFields.url" (keyup)="onKeyPress($event)" 
+                type="text" placeholder="Enter URL here..."
+                formControlName="url"
+            />
+        </div>
 
-    <div>
-        <button (click)="go()">Go</button>
-    </div>
+        <div>
+            <button (click)="go()" [disabled]="!urlFormGroup.valid">Go</button>
+        </div>
 
-    <div *ngIf="resInfo.shortUrl !== ''">
-        <span>The short url of </span>{{urlInput.value}}<span> is </span>{{ resInfo.shortUrl }}
-    </div>
+        <div *ngIf="resInfo.shortUrl !== ''">
+            <span>The short url of </span>{{urlInput.value}}<span> is </span>{{ resInfo.shortUrl }}
+        </div>
 
-    <div *ngIf="resInfo.longUrl !== ''">
-        You are about to redirect to {{ resInfo.longUrl }} in 2 seconds
-    </div>
+        <div *ngIf="resInfo.longUrl !== ''">
+            You are about to redirect to {{ resInfo.longUrl }} in 2 seconds
+        </div>
+    </form>
 </div>
