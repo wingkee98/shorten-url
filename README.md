@@ -29,6 +29,10 @@ $your-home-dir/shorten-url>npm install
 
 $your-home-dir/shorten-url/ng build
 
+## To Run Angular Unit Test
+
+$your-home-dir/shorten-url/ng test
+
 ## Start the Express server
 
 $your-home-dir/shorten-url/node server.js
