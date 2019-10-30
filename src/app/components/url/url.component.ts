@@ -46,14 +46,7 @@ export class UrlComponent implements OnInit {
     subscribe((responses:any) => {
       console.log(responses);
 
-      if (responses.isInputLongUrl) {
-        this.resInfo.shortUrl = responses.shortUrl;
-      } else {
-        this.resInfo.shortUrl = '';
-        this.resInfo.longUrl = responses.longUrl;
-
-        this.redirect();
-      }
+      this.resInfo.shortUrl = responses.shortUrl;
     });
   }
 

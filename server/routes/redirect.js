@@ -6,9 +6,9 @@ var dataFile = require('../../dataFile.json');
 
 router.get('/:id', (req, res, next) => {
     dataFile = require('../../dataFile.json');
+    let id = parseInt(req.params.id);
 
-    let shortUrl = req.get('host') + '/' + req.params.id;
-    let longUrl = makeFullUrl(getLongUrl(shortUrl));
+    let longUrl = makeFullUrl(getLongUrl(id));
 
     console.log('param id ' + req.params.id);
 
@@ -16,8 +16,8 @@ router.get('/:id', (req, res, next) => {
     res.redirect(longUrl);
 });
 
-function getLongUrl(url) {
-    return dataFile.shortUrl[url];
+function getLongUrl(id) {
+    return dataFile.url[id-1];
 }
 
 function makeFullUrl(url) {
