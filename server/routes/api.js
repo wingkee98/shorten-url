@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var urlModel = require('../models/url');
 var fs = require('fs');
 
 var dataFile = require('../../dataFile.json');
@@ -27,14 +28,16 @@ router.post('/', (req, res, next) => {
 function saveDataFile() {
     console.log('ready to save data file ' + JSON.stringify(dataFile));
 
-    fs.writeFile('./dataFile.json', JSON.stringify(dataFile), (err) => {
-        if (err) {
-            console.err('Write ERROR ' + err);
-            throw err;
-        }
+    // fs.writeFile('./dataFile.json', JSON.stringify(dataFile), (err) => {
+    //     if (err) {
+    //         console.err('Write ERROR ' + err);
+    //         throw err;
+    //     }
 
-        console.log('save data file successfully');
-    });
+    //     console.log('save data file successfully');
+    // });
+
+    
 }
 
 function isLongUrl(req) {
