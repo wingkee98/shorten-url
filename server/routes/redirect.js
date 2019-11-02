@@ -1,34 +1,35 @@
 var express = require('express');
 var router = express.Router();
-var fs = require('fs');
 
-var dataFile = require('../../dataFile.json');
+module.exports = (dbCollection, index) => {
+    router.get('/:id', (req, res, next) => {
 
-router.get('/:id', (req, res, next) => {
-    dataFile = require('../../dataFile.json');
+        const shortUrl = req.get('host') + '/' + req.params.id;
 
-    let shortUrl = req.get('host') + '/' + req.params.id;
-    let longUrl = makeFullUrl(getLongUrl(shortUrl));
+        console.log('find url ' + shortUrl);
+        
+        dbCollection.findOne({ shortUrl: shortUrl }, (err, doc) => {
+            if (err) {
+                console.log('cannot find url ' + shortUrl);
+                res.status(404).json({ message: 'connot find url ' + shortUrl + ' : ' + err });
+            } else {
+                const longUrl = makeFullUrl(doc.longUrl);
+                console.log('found url ' + shortUrl + ' : ' + longUrl );
+                res.redirect(longUrl);
+            }
+        });
+    });
 
-    console.log('param id ' + req.params.id);
+    function makeFullUrl(url) {
+        let pattern = /^((http|https):\/\/)/;
+        let newUrl = url;
 
-    //res.send(longUrl);
-    res.redirect(longUrl);
-});
+        if (!pattern.test(url)) {
+        newUrl = 'http://' + url;
+        }
 
-function getLongUrl(url) {
-    return dataFile.shortUrl[url];
-}
-
-function makeFullUrl(url) {
-    let pattern = /^((http|https):\/\/)/;
-    let newUrl = url;
-
-    if (!pattern.test(url)) {
-      newUrl = 'http://' + url;
+        return newUrl;
     }
 
-    return newUrl;
+    return router;
 }
-
-module.exports = router;

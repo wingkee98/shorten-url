@@ -1,81 +1,83 @@
 var express = require('express');
 var router = express.Router();
-var urlModel = require('../models/url');
-var fs = require('fs');
+//var UrlModel = require('../models/url');
+//const urlMongodb = require('mongodb').MongoClient;
+var urlIndex = undefined;
 
-var dataFile = require('../../dataFile.json');
+module.exports = function(dbCollection, index) {
+    urlIndex = index;
+    console.log('index passed in ' + index);
 
-router.get('/', (req, res, next) => {
-    res.send(dataFile);
-});
+    router.get('/', async (req, res, next) => {
+        // console.log('get url now');
+        // try {
+        //     console.log('get db now')
+        //     const urlModel = await UrlModel.find();
+        //     console.log('get url ' + JSON.stringify(urlModel));
+        //     res.json(urlModel);
+        // }
+        // catch (err) {
+        //     console.log('get url failed ' + err);
+        //     res.status(500).json({ message: 'get url failed ' + err });
+        // }
+        dbCollection.find().toArray((err, docs) => {
+            if (err) {
+                res.status(404).json({ message: "cannot find index "});
+                console.log('Cannot find index');
+            } else {
+                console.log('got it ' + docs);
+                res.json({ message: docs});
+            }
+        });
+    });
 
-router.post('/', (req, res, next) => {
-    let result = { isInputLongUrl: true };
+    router.post('/', (req, res) => {
+        const longUrl = req.body.url;
+        const shortUrl = req.get('host') + "/" + urlIndex++;
 
-    console.log('input url ' + JSON.stringify(req.body));
+        dbCollection.insert({ 
+            longUrl: longUrl,
+            shortUrl: shortUrl
+        }, (err, result) => {
+            if (err) {
+                console.log('insert failed ' + err);
+                res.status(404).json({ message: 'inser failed ' + err});
+            } else {
+                console.log('inserted to db ' + result);
+                saveIndex();
+                res.json({ longUrl: longUrl, shortUrl: shortUrl });
+            }
+        });
+    });
 
-    if (isLongUrl(req)) {
-        let shortenUrl = genShortenUrl(req);
-        result.shortUrl = shortenUrl;
-    } else {
-        result.isInputLongUrl = false;
-        result.longUrl = getLongUrl(req);
+    function saveIndex() {
+        dbCollection.update({ longUrl: 'index' }, 
+        { $set: { index: urlIndex }},
+        ( err, result ) => {
+            console.log('save indexed');
+        });
     }
-
-    res.send(result);
-});
-
-function saveDataFile() {
-    console.log('ready to save data file ' + JSON.stringify(dataFile));
-
-    // fs.writeFile('./dataFile.json', JSON.stringify(dataFile), (err) => {
-    //     if (err) {
-    //         console.err('Write ERROR ' + err);
-    //         throw err;
-    //     }
-
-    //     console.log('save data file successfully');
+    // router.post('/', (req, res, next) => {
+    //     const url = req.body.url.toLowerCase();
+    //     const urlModel = new UrlModel({
+    //         longUrl: url,
+    //         shortUrl: req.get('host') + '/' + urlIndex++
+    //     });
+    //         urlModel.save()
+    //         .then((resp) => {
+    //             console.log('save url ' + url);
+    //             setIndex();
+    //             let result = { isInputLongUrl: true, longUrl: url, shortUrl: urlModel.shortUrl };
+    //             console.log('input url ' + JSON.stringify(req.body));
+    //             res.send(result);
+    //         })
+    //         .catch(err => {
+    //             console.log('save url failed ' + err);
+    //             let result = { isInputLongUrl: true, longUrl: url, shortUrl: urlModel.shortUrl };
+    //             console.log('input url ' + JSON.stringify(req.body));
+    //             res.send(result);
+    //         });
     // });
 
-    
+    return router;
 }
-
-function isLongUrl(req) {
-    let url = req.body.url.toLowerCase();
-    let host = req.get('host').toLowerCase();
-
-    return url.indexOf(host) >= 0 ? false : true;
-}
-
-function genShortenUrl(req) {
-    if (!dataFile.lastIndex) {
-        dataFile.lastIndex = 0;
-        dataFile.longUrl = {};
-        dataFile.shortUrl = {};
-    };
-
-    let inputUrl = req.body.url.toLowerCase();
-    let shortUrl = '';
-    if (!dataFile.longUrl[inputUrl]) {
-        dataFile.lastIndex++;
-        shortUrl = req.get('host') + '/' + dataFile.lastIndex;
-
-        dataFile.longUrl[inputUrl] = shortUrl;
-        dataFile.shortUrl[shortUrl] = inputUrl;
-
-        saveDataFile();
-    } else {
-        shortUrl = dataFile.longUrl[inputUrl];
-    }
-
-    console.log('Full URL ' + req.protocol + '://' + req.get('host') + ' org ' +req.originalUrl);
-    return shortUrl;
-}
-
-function getLongUrl(req) {
-    let url = req.body.url.toLowerCase();
-
-    return dataFile.shortUrl[url];
-}
-
-module.exports = router;

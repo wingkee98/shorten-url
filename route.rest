@@ -1,0 +1,9 @@
+Get http://localhost:9000/api
+
+###
+Post http://localhost:9000/api
+Content-Type: application/json
+
+{
+    "url": "google.com"
+}
